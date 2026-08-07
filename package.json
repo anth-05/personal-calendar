@@ -1,26 +1,14 @@
 {
   "name": "personal-calendar",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
+  "description": "A tiny personal calendar: type an event in plain English, confirm it, and it's available to Apple Calendar as a subscription.",
+  "main": "server.js",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "start": "node server.js",
+    "dev": "node --watch server.js"
   },
-  "dependencies": {
-    "next": "16.3.0",
-    "react": "19.2.8",
-    "react-dom": "19.2.8"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.3.0",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+  "engines": {
+    "node": ">=18"
   }
 }
