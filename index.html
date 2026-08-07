@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Personal Calendar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    ::selection { background: rgba(99, 102, 241, 0.25); }
+    body { background: #f8fafc; }
+  </style>
+</head>
+<body class="min-h-screen text-slate-900 antialiased">
+  <main class="mx-auto w-full max-w-xl px-4 py-8 sm:py-12">
+    <header class="flex flex-col items-start gap-3">
+      <span class="inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-medium tracking-wide text-indigo-700">
+        Personal calendar
+      </span>
+      <h1 class="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+        Just tell me what you need to do.
+      </h1>
+      <p class="text-base text-slate-500">
+        Write it naturally. It'll turn into a calendar event.
+      </p>
+    </header>
+
+    <div id="notice" class="mt-5 hidden rounded-2xl border px-4 py-3 text-sm"></div>
+
+    <!-- Input -->
+    <section class="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/50">
+      <label for="event-text" class="sr-only">Describe your event</label>
+      <textarea
+        id="event-text"
+        rows="3"
+        placeholder="Training Friday at 18:00"
+        class="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 p-4 text-base text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-100"
+      ></textarea>
+      <div class="mt-3 flex items-center justify-between gap-3">
+        <p class="hidden text-xs text-slate-400 sm:block">
+          <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-mono">⌘</kbd>
+          + <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-mono">Enter</kbd>
+          to interpret
+        </p>
+        <button
+          id="interpret-btn"
+          type="button"
+          class="ml-auto inline-flex items-center justify-center rounded-full bg-indigo-600 px-6 py-3 text-sm font-medium text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-500 active:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Interpret
+        </button>
+      </div>
+
+      <div class="mt-4 flex flex-wrap gap-2">
+        <button type="button" class="example-btn rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-600 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700">
+          Training Friday at 18:00
+        </button>
+        <button type="button" class="example-btn rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-600 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700">
+          Gym tomorrow at 7pm for 90 minutes
+        </button>
+        <button type="button" class="example-btn rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-600 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700">
+          Dinner with Sarah Friday at 8pm
+        </button>
+      </div>
+    </section>
+
+    <!-- Editable preview -->
+    <section id="preview" class="mt-5 hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/50">
+      <p class="text-xs font-medium uppercase tracking-wide text-indigo-600">Preview &mdash; check before adding</p>
+
+      <div class="mt-3 space-y-3">
+        <div>
+          <label for="preview-title" class="block text-xs font-medium text-slate-500">Title</label>
+          <input id="preview-title" type="text"
+            class="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-base outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-100" />
+        </div>
+
+        <div class="flex gap-3">
+          <div class="flex-1">
+            <label for="preview-date" class="block text-xs font-medium text-slate-500">Date</label>
+            <input id="preview-date" type="date"
+              class="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-base outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-100" />
+          </div>
+          <label class="flex shrink-0 items-end gap-2 pb-2.5 text-sm text-slate-600">
+            <input id="preview-allday" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+            All day
+          </label>
+        </div>
+
+        <div id="preview-time-row" class="flex gap-3">
+          <div class="flex-1">
+            <label for="preview-start" class="block text-xs font-medium text-slate-500">Start time</label>
+            <input id="preview-start" type="time"
+              class="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-base outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-100" />
+          </div>
+          <div class="flex-1">
+            <label for="preview-duration" class="block text-xs font-medium text-slate-500">Duration (min)</label>
+            <input id="preview-duration" type="number" min="5" step="5"
+              class="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-base outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-100" />
+          </div>
+        </div>
+
+        <div>
+          <label for="preview-location" class="block text-xs font-medium text-slate-500">Location (optional)</label>
+          <input id="preview-location" type="text" placeholder="&#128205; Add a place"
+            class="mt-1 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-base outline-none focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-100" />
+        </div>
+      </div>
+
+      <div class="mt-5 flex gap-3">
+        <button id="confirm-btn" type="button"
+          class="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-indigo-600 px-5 py-3 text-sm font-medium text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50">
+          Add event
+        </button>
+        <button id="cancel-btn" type="button"
+          class="rounded-full border border-slate-200 px-5 py-3 text-sm font-medium text-slate-600 transition hover:bg-slate-50">
+          Cancel
+        </button>
+      </div>
+    </section>
+
+    <!-- Apple Calendar -->
+    <section class="mt-5 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/50">
+      <h2 class="text-sm font-semibold text-slate-900">Apple Calendar</h2>
+      <p class="mt-2 text-sm text-slate-500">
+        Subscribe once. New events created here will appear in Apple Calendar.
+      </p>
+
+      <a id="subscribe-link" href="#"
+        class="pointer-events-none mt-4 inline-flex w-full items-center justify-center rounded-full bg-slate-300 px-5 py-3 text-sm font-medium text-white shadow-sm transition">
+        Subscribe to Calendar
+      </a>
+
+      <div class="mt-3 flex items-center gap-2">
+        <input id="feed-url" readOnly value="Loading&hellip;"
+          class="min-w-0 flex-1 truncate rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-500 outline-none focus:border-indigo-400" />
+        <button id="copy-btn" type="button"
+          class="shrink-0 rounded-full border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-50">
+          Copy
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-1 text-xs text-slate-400">
+        <p>On iPhone or Mac: Settings &rarr; Calendar &rarr; Accounts &rarr; Add Account &rarr; Other &rarr; Add Subscribed Calendar, then paste the link above.</p>
+        <p>Sync direction: website &rarr; Apple Calendar only.</p>
+        <p>Treat this link like a password &mdash; anyone with it can read your events.</p>
+      </div>
+    </section>
+
+    <!-- Upcoming -->
+    <section class="mt-5">
+      <h2 class="text-lg font-semibold text-slate-900">Upcoming</h2>
+      <div id="events-list" class="mt-3 rounded-3xl border border-slate-200 bg-white shadow-sm shadow-slate-200/50">
+        <p class="p-5 text-sm text-slate-400">Loading&hellip;</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="/parse.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
